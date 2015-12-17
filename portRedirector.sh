@@ -21,6 +21,10 @@ DESTPORT='443'
 TOPORT='22'
 
 #-----------------------------------------------------
+# TermGate (https://github.com/Arno0x/TermGate) integration - OPTIONNAL
+[[ $DISPLAY != "" ]] && SOURCEIP=$DISPLAY || SOURCEIP='unset'
+
+#-----------------------------------------------------
 # Perform some basic checks beforehands
 if [[ ! -x ${IPTABLES} ]]; then
 	echo "${IPTABLES} not found OR is not executable"
@@ -66,11 +70,13 @@ function addRedirection {
 
 	echo -ne "${BLUE}[ADD REDIRECTION]> Enter source IP: ${NC}"
 	read input
-	if [[ $input =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
-		SOURCEIP=$input
-	else
-		echo -e "[${RED}ERROR${NC}] Invalid IP address"
-		return 1
+	if [[ "$input" != "" ]]; then
+		if [[ $input =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+			SOURCEIP=$input
+		else
+			echo -e "[${RED}ERROR${NC}] Invalid IP address"
+			return 1
+		fi
 	fi
 	echo -e "[${GREEN}OK${NC}] Source IP set to $SOURCEIP"
 
