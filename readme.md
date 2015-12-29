@@ -14,12 +14,15 @@ The nice thing about it is because TermGate, along with Gotty, offers a persiste
 letsNcryptCertRenewNginx.sh
 ----------------
 This script automates the renewal of [LetsEncrypt](https://letsencrypt.org/) SSL certificates in an Nginx environment which is not (*yet*) fully supported by LetsEncrypt. In addition, though optionnal, the script generates proper nginx configuration line for new HPKP headers following certificates renewal. This script can be called from a cron task. A notification e-mail is sent whatever happens (*success or failure*) along with all information regarding the execution of the script. The script automates the following process:
-1. Perform various sanity checks
-2. Stop Nginx, only if the config file syntax is correct (*to prevent impossibility of restart*)
-3. Call *letsencrypt-auto* with proper parameters for automatically renew certificates
-4. Check renewed certificates
-5. [**Optionnal**] Compute new HPKP headers and generate proper nginx config line
-6. Restart Nginx
-7. Send notification e-mail
+  1. Perform various sanity checks
+  2. Stop Nginx, only if the config file syntax is correct (*to prevent impossibility of restart*)
+  3. Call *letsencrypt-auto* with proper parameters for automatically renew certificates
+  4. Check renewed certificates
+  5. [**Optionnal**] Compute new HPKP headers and generate proper nginx config line
+  6. Restart Nginx
+  7. Send notification e-mail
 
 The 'GLOBAL SETTINGS' section at beginning of the script MUST be edited with you own settings.
+
+![bitcoin](https://dl.dropboxusercontent.com/s/imckco5cg0llfla/bitcoin-icon.png?dl=0) Like these tools ? Tip me with bitcoins !
+![address](https://dl.dropboxusercontent.com/s/9bd5p45xmqz72vw/bc_tipping_address.png?dl=0)
