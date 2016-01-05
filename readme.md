@@ -13,16 +13,20 @@ The nice thing about it is because TermGate, along with Gotty, offers a persiste
 
 letsNcryptCertRenewNginx.sh
 ----------------
-This script automates the renewal of [LetsEncrypt](https://letsencrypt.org/) SSL certificates in an Nginx environment which is not (*yet*) fully supported by LetsEncrypt. In addition, though optionnal, the script generates proper nginx configuration line for new HPKP headers following certificates renewal. This script can be called from a cron task. A notification e-mail is sent whatever happens (*success or failure*) along with all information regarding the execution of the script. The script automates the following process:
-  1. Perform various sanity checks
-  2. Stop Nginx, only if the config file syntax is correct (*to prevent impossibility of restart*)
-  3. Call *letsencrypt-auto* with proper parameters for automatically renew certificates
-  4. Check renewed certificates
-  5. [**Optionnal**] Compute new HPKP headers and generate proper nginx config line
-  6. Restart Nginx
-  7. Send notification e-mail
+This script automates the renewal of [LetsEncrypt](https://letsencrypt.org/) SSL certificates in an Nginx environment which is not (*yet*) fully supported by LetsEncrypt. In addition, though optionnal, the script generates proper nginx configuration line for new HPKP headers following certificates renewal. It can be executed as a daily cron task. The script first checks the validity of current certificates and if they're about to expire (as a number of days before expiry date) then the whole process of renewing them is launched.
+A notification e-mail is sent whatever happens (*success or failure*) along with all information regarding the execution of the script.
 
-The 'GLOBAL SETTINGS' section at beginning of the script MUST be edited with you own settings.
+The script automates the following process:
+  1. Perform various sanity checks
+  2. Check current certificates' expiry date. If they are about to expire, as defined in number of days before expiration in the GLOBAL SETTINGS section, then:
+    3. Stop Nginx, but only if the config file syntax is correct (*to prevent impossibility of restart*)
+    4. Call *letsencrypt-auto* with proper parameters and config file for automatically renewing certificates
+    5. Check renewed certificates expiry date
+    6. [**Optionnal**] Compute new HPKP headers and generate proper nginx config line
+    7. Restart Nginx
+    8. Send notification e-mail with all useful information (status and expiry date of new certificates)
+
+**The 'GLOBAL SETTINGS' section at beginning of the script MUST be edited with you own settings.**
 
 ![bitcoin](https://dl.dropboxusercontent.com/s/imckco5cg0llfla/bitcoin-icon.png?dl=0) Like these tools ? Tip me with bitcoins !
 ![address](https://dl.dropboxusercontent.com/s/9bd5p45xmqz72vw/bc_tipping_address.png?dl=0)
