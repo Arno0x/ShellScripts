@@ -68,10 +68,12 @@ function deleteRedirection {
 function addRedirection {
 	echo "----- Add a new port redirection"
 
-	echo -ne "${BLUE}[ADD REDIRECTION]> Enter source IP: ${NC}"
+	echo -ne "${BLUE}[ADD REDIRECTION]> Enter source IP, or 'any' (default: $SOURCEIP): ${NC}"
 	read input
 	if [[ "$input" != "" ]]; then
-		if [[ $input =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
+		if [[ "$input" == "any" ]]; then
+			SOURCEIP="$input"
+		elif [[ $input =~ ^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$ ]]; then
 			SOURCEIP=$input
 		else
 			echo -e "[${RED}ERROR${NC}] Invalid IP address"
@@ -117,7 +119,11 @@ function addRedirection {
 	echo -e "[${GREEN}OK${NC}] Redirection port set to $TOPORT"
 
 	# Perform the actual redirection
-	sudo ${IPTABLES} -t nat -A PREROUTING -s ${SOURCEIP}/32 -p ${PROTOCOL} --dport ${DESTPORT} -j REDIRECT --to-port ${TOPORT}
+	if [[ "${SOURCEIP}" == "any" ]]; then
+		sudo ${IPTABLES} -t nat -A PREROUTING -p ${PROTOCOL} --dport ${DESTPORT} -j REDIRECT --to-port ${TOPORT}
+	else
+		sudo ${IPTABLES} -t nat -A PREROUTING -s ${SOURCEIP}/32 -p ${PROTOCOL} --dport ${DESTPORT} -j REDIRECT --to-port ${TOPORT}
+	fi
 
 	[[ $? -eq 0 ]] && echo -e "[${GREEN}OK${NC}] Redirection completed" || echo -e "[${RED}ERROR${NC}] Could not complete redirection"
 }
